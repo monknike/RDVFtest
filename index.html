@@ -1,487 +1,88 @@
-{"id":"43012","variant":"standard","title":"RDVF Web Combat Demo"}
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RDVF — Combat Demo (Browser)</title>
-  <style>
-    :root{ --bg:#0f1620; --card:#121826; --accent:#7bd389; --muted:#b9c2cf; }
-    body{font-family:Inter,Segoe UI,system-ui,Arial; background:linear-gradient(180deg,#071018 0%, #0e1720 100%); color:#e6eef6; margin:0; padding:18px;}
-    h1{margin:0 0 12px 0; font-size:20px;}
-    .container{display:grid; grid-template-columns: 360px 1fr; gap:16px; align-items:start;}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:14px; box-shadow:0 6px 18px rgba(2,6,12,0.6); border:1px solid rgba(255,255,255,0.03);}
-    label{display:block; font-size:12px; color:var(--muted); margin-top:8px;}
-    input[type="number"], input[type="text"], textarea{width:100%; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); background:transparent; color:inherit; box-sizing:border-box;}
-    .flex{display:flex; gap:10px; align-items:center;}
-    .stat-row{display:flex; gap:8px; margin-top:8px;}
-    .stat{flex:1;}
-    .combat-row{display:flex; gap:12px;}
-    .combatant{flex:1;}
-    .big{font-size:18px; font-weight:600;}
-    .hp{font-weight:700; color:#ffdcdc;}
-    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
-    button{background:transparent; border:1px solid rgba(255,255,255,0.06); padding:8px 10px; border-radius:10px; cursor:pointer; color:inherit;}
-    button.primary{background:linear-gradient(90deg,var(--accent),#59b977); color:#04210b; border:none;}
-    .log{height:360px; overflow:auto; background:rgba(0,0,0,0.12); padding:8px; border-radius:8px; font-size:13px;}
-    .muted{color:var(--muted); font-size:13px;}
-    .small{font-size:12px;}
-    .two-col{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
-    .command-list{max-height:160px; overflow:auto; background:rgba(255,255,255,0.02); padding:8px; border-radius:8px;}
-    .divider{height:1px; background:rgba(255,255,255,0.03); margin:12px 0;}
-    footer{margin-top:12px; color:var(--muted); font-size:13px;}
-    .control-row{display:flex; gap:8px; align-items:center; margin-top:10px;}
-    .kbd{background:#081018; padding:4px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.02); font-weight:600;}
-  </style>
+	<title>Rendezvous Fight Test (v.0.9, based on FLUX v. 2.7_alpha)</title>
+	<link href="rf.css" rel="stylesheet" type="text/css">
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="rf.js"></script>
 </head>
 <body>
-  <h1>RDVF — Browser combat demo (pure HTML/JS)</h1>
-  <div class="container">
-    <div>
-      <div class="card">
-        <div class="combat-row">
-          <div class="combatant">
-            <div class="big">Combatant A</div>
-            <label class="small">Name</label>
-            <input id="A_name" type="text" value="Fighter A"/>
-            <div class="stat-row">
-              <div class="stat">
-                <label>Strength</label><input id="A_Strength" type="number" value="10" />
-              </div>
-              <div class="stat">
-                <label>Dexterity</label><input id="A_Dexterity" type="number" value="10" />
-              </div>
-            </div>
-            <div class="stat-row">
-              <div class="stat">
-                <label>Resilience</label><input id="A_Resilience" type="number" value="8" />
-              </div>
-              <div class="stat">
-                <label>Spellpower</label><input id="A_Spellpower" type="number" value="6" />
-              </div>
-            </div>
-            <label>Willpower</label><input id="A_Willpower" type="number" value="7" />
-            <div class="divider"></div>
-            <div class="muted small">Current HP: <span id="A_hp" class="hp">100</span></div>
-            <div class="muted small">Stamina / Mana (derived): <span id="A_mana">50</span></div>
-          </div>
+	<div id="Setup" class="InputPanel">
+		<form id="InitialSetup">
+			<table class="FrameTable"><tr><td>
+			<fieldset id="Fighter1" class="StatBlock FormContainer">
+			<legend>Fighter One</legend>
+			<label>Name:</label> <input type="text" size="30" name="Name" value="Fighter One" /><br />
+			<br />
+			<label name="Strength">Strength:</label> <input type="text" size="3" name="Strength" value="4" /><br />
+			<label name="Dexterity">Dexterity:</label> <input type="text" size="3" name="Dexterity" value="4" /><br />
+			<label name="Endurance">Endurance:</label> <input type="text" size="3" name="Endurance" value="4" /><br />
+			<label name="Intellect">Intellect:</label> <input type="text" size="3" name="Intellect" value="4" /><br />
+			<label name="Willpower">Willpower:</label> <input type="text" size="3" name="Willpower" value="4" /><br />
+			<br />
+			<label name="HP">HP:</label> <input type="text" size="3" name="HP" value="100" /> out of a maximum of <span name="maxHP">100</span>.<br />
+			<label name="Mana">Mana:</label> <input type="text" size="3" name="Mana" value="40" /> out of a maximum of <span name="maxMana">100</span>.<br />
+			<label name="Stamina">Stamina:</label> <input type="text" size="3" name="Stamina" value="100" /> out of a maximum of 100.<br />
+			<label name="Cloth">Cloth:</label> <input type="text" size="3" name="Cloth" value="40" /> No maximum.<br />
+			</fieldset>
+			</td><td>
+			<fieldset id="Fighter2" class="StatBlock FormContainer">
+			<legend>Fighter Two</legend>
+			<label>Name:</label> <input type="text" size="30" name="Name" value="Fighter Two" /><br />
+			<br />
+			<label name="Strength">Strength:</label> <input type="text" size="3" name="Strength" value="4" /><br />
+			<label name="Dexterity">Dexterity:</label> <input type="text" size="3" name="Dexterity" value="4" /><br />
+			<label name="Endurance">Endurance:</label> <input type="text" size="3" name="Endurance" value="4" /><br />
+			<label name="Intellect">Intellect:</label> <input type="text" size="3" name="Intellect" value="4" /><br />
+			<label name="Willpower">Willpower:</label> <input type="text" size="3" name="Willpower" value="4" /><br />
+			<br />
+			<label name="HP">HP:</label> <input type="text" size="3" name="HP" value="100" /> out of a maximum of <span name="maxHP">100</span>.<br />
+			<label name="Mana">Mana:</label> <input type="text" size="3" name="Mana" value="40" /> out of a maximum of <span name="maxMana">100</span>.<br />
+			<label name="Stamina">Stamina:</label> <input type="text" size="3" name="Stamina" value="100" /> out of a maximum of 100.<br />
+			<label name="Cloth">Cloth:</label> <input type="text" size="3" name="Cloth" value="40" /> No maximum.<br />
+			</fieldset>
+			</td></tr><tr><td colspan="2"><hr>
+			<fieldset id="Arena" class="StatBlock">
+				<table class="WideFormContainer"><tr>
+				<td><label name="StatPoints">Stat Points:</label> <input type="text" size="3" name="StatPoints" value="20" /></td>
+				<td><label name="GameSpeed">Game Speed:</label> <input type="text" size="3" name="GameSpeed" value="1" /></td>
+				<td><label name="DisorientedAt">Dizzy:</label> <input type="text" size="3" name="DisorientedAt" value="40" /></td>
+				<td><label name="UnconsciousAt">KO:</label> <input type="text" size="3" name="UnconsciousAt" value="25" /></td>
+				<td><label name="DeadAt">Death:</label> <input type="text" size="3" name="DeadAt" value="0" /></td>
+				</tr></table>
+			</fieldset>
+			</td></tr><tr><td colspan="2">
+			<input type="submit" value="Check and Submit" class="WideButton" />
+			<div id="ErrorMessage" class="ErrorBox"></div>
+			</td></td></table>
+		</form>
+	</div>
 
-          <div class="combatant">
-            <div class="big">Combatant B</div>
-            <label class="small">Name</label>
-            <input id="B_name" type="text" value="Fighter B"/>
-            <div class="stat-row">
-              <div class="stat">
-                <label>Strength</label><input id="B_Strength" type="number" value="9" />
-              </div>
-              <div class="stat">
-                <label>Dexterity</label><input id="B_Dexterity" type="number" value="11" />
-              </div>
-            </div>
-            <div class="stat-row">
-              <div class="stat">
-                <label>Resilience</label><input id="B_Resilience" type="number" value="9" />
-              </div>
-              <div class="stat">
-                <label>Spellpower</label><input id="B_Spellpower" type="number" value="5" />
-              </div>
-            </div>
-            <label>Willpower</label><input id="B_Willpower" type="number" value="6" />
-            <div class="divider"></div>
-            <div class="muted small">Current HP: <span id="B_hp" class="hp">100</span></div>
-            <div class="muted small">Stamina / Mana (derived): <span id="B_mana">50</span></div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div>
-          <div class="muted">Actions</div>
-          <div id="actions" class="actions">
-            <!-- action buttons injected here -->
-          </div>
-
-          <div class="control-row">
-            <button id="resetBtn">Reset HP & Stats</button>
-            <button id="autoHeal" class="primary">Auto Heal 10 HP</button>
-            <div style="flex:1"></div>
-            <button id="simulate" class="primary">Simulate Auto Round (A->B)</button>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="muted">Custom commands (paste command array from your repo here)</div>
-          <textarea id="commandsInput" rows="6" placeholder='Example:
-[
-  {"id":"strike","name":"Strike","type":"attack","desc":"A basic strike.","cost":{"mana":0},"formula":"damage = 4 + src.Strength + rand(-2,2)"}
-]
-'></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <button id="loadCommands">Load commands JSON</button>
-            <button id="clearCommands">Clear custom commands</button>
-            <div class="muted small" style="margin-left:auto">Tip: paste lightweight JSON definitions of commands.</div>
-          </div>
-        </div>
-      </div>
-
-      <footer class="muted small">
-        Built as a static demo. To wire the repo's exact command logic, paste simplified JSON command definitions into the textarea.
-      </footer>
-    </div>
-
-    <div>
-      <div class="card">
-        <div class="muted">Battle Log</div>
-        <div id="log" class="log"></div>
-
-        <div class="divider"></div>
-
-        <div class="two-col">
-          <div>
-            <div class="muted small">Round controls</div>
-            <div style="display:flex;gap:8px;margin-top:6px;">
-              <button id="nextAattack">A → Attack B</button>
-              <button id="nextBattack">B → Attack A</button>
-              <button id="skipTurn">Skip / End Turn</button>
-            </div>
-          </div>
-          <div>
-            <div class="muted small">Quick stats</div>
-            <div style="margin-top:6px;">
-              <div id="summary" class="muted small"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="card" style="margin-top:12px;">
-        <div class="muted">Available Commands (built-in)</div>
-        <div class="command-list" id="builtinList"></div>
-      </div>
-    </div>
-  </div>
-
-<script>
-/*
-  RDVF — browser combat demo
-  - Stats: Strength, Dexterity, Resilience, Spellpower, Willpower
-  - Two combatants A & B
-  - Built-in commands below. You can paste custom commands into the textarea
-    to override/extend them. Custom commands should be a JSON array of objects:
-      { id, name, type, desc, cost:{mana:0}, target:"enemy"|"self", formula: "..." }
-    Where formula is a JS expression string evaluated with `src` and `tgt` objects in scope
-    and util functions rand(min,max) and applyDamage(amount).
-  - This approach lets you paste simplified command definitions from your repo's Commands,
-    without requiring server-side C#.
-*/
-
-function $(id){return document.getElementById(id);}
-
-const clamp = (v,a,b)=> Math.max(a,Math.min(b,v));
-const rand = (a,b)=> Math.floor(Math.random()*(b-a+1))+a;
-
-function makeCombatant(prefix){
-  return {
-    name: $(prefix+'_name').value || prefix,
-    Strength: Number($(prefix+'_Strength').value)||0,
-    Dexterity: Number($(prefix+'_Dexterity').value)||0,
-    Resilience: Number($(prefix+'_Resilience').value)||0,
-    Spellpower: Number($(prefix+'_Spellpower').value)||0,
-    Willpower: Number($(prefix+'_Willpower').value)||0,
-    maxHp: 100,
-    hp: 100,
-    mana: 50
-  };
-}
-
-function refreshUI(A,B){
-  $('A_hp').textContent = Math.max(0, Math.round(A.hp));
-  $('B_hp').textContent = Math.max(0, Math.round(B.hp));
-  $('A_mana').textContent = Math.round(A.mana);
-  $('B_mana').textContent = Math.round(B.mana);
-  $('summary').textContent = `${A.name}: ${Math.round(A.hp)} HP • ${Math.round(A.mana)} mana  —  ${B.name}: ${Math.round(B.hp)} HP • ${Math.round(B.mana)} mana`;
-}
-
-// Simple damage application reduces by target.Resilience
-function applyDamage(target, amount){
-  // Mitigation formula: each point of Resilience reduces damage by 1.5% up to 60%
-  const mitigation = clamp(0.015 * target.Resilience, 0, 0.6);
-  const reduced = amount * (1 - mitigation);
-  target.hp = Math.max(0, target.hp - Math.round(reduced));
-  return Math.round(reduced);
-}
-
-// Built-in command definitions (simple, illustrative)
-let builtinCommands = [
-  { id:'strike', name:'Strike', type:'attack', desc:'A strong melee attack', cost:{mana:0}, target:'enemy',
-    run: (src,tgt,util)=> {
-      const base = 4 + src.Strength;
-      const variability = rand(-2,2) + Math.floor(src.Dexterity/6);
-      const raw = base + variability;
-      const dmg = applyDamage(tgt, raw);
-      util.log(`${src.name} uses Strike on ${tgt.name} for ${dmg} damage.`);
-    }
-  },
-  { id:'quick', name:'Quick Jab', type:'attack', desc:'Fast hit with dexterity bonus', cost:{mana:0}, target:'enemy',
-    run: (src,tgt,util)=> {
-      const raw = Math.max(1, 2 + Math.floor(src.Dexterity/2) + rand(-1,1));
-      const dmg = applyDamage(tgt, raw);
-      util.log(`${src.name} jabs ${tgt.name} for ${dmg} damage.`);
-    }
-  },
-  { id:'castbolt', name:'Magic Bolt', type:'spell', desc:'Spell that scales with Spellpower', cost:{mana:8}, target:'enemy',
-    run: (src,tgt,util)=> {
-      if(src.mana < 8){ util.log(`${src.name} tried to cast Magic Bolt but lacks mana.`); return; }
-      src.mana -= 8;
-      const raw = 3 + Math.floor(src.Spellpower*1.2) + rand(-1,2);
-      const dmg = applyDamage(tgt, raw);
-      util.log(`${src.name} fires Magic Bolt at ${tgt.name} for ${dmg} damage (mana -8).`);
-    }
-  },
-  { id:'defend', name:'Defend', type:'buff', desc:'Brace to reduce next damage', cost:{mana:0}, target:'self',
-    run: (src,tgt,util)=> {
-      // simple defend: temporary resilience bump for a single next hit
-      src._defend = (src._defend || 0) + 6;
-      util.log(`${src.name} braces and gains +6 temporary resilience (next hit).`);
-    }
-  },
-  { id:'drain', name:'Life Drain', type:'spell', desc:'Steal small HP from enemy', cost:{mana:12}, target:'enemy',
-    run: (src,tgt,util)=> {
-      if(src.mana < 12){ util.log(`${src.name} tried Life Drain but lacks mana.`); return; }
-      src.mana -=12;
-      const raw = 4 + Math.floor(src.Spellpower*0.8) + rand(-2,2);
-      const dmg = applyDamage(tgt, raw);
-      const healed = Math.min(src.maxHp - src.hp, Math.round(dmg*0.7));
-      src.hp += healed;
-      util.log(`${src.name} drains ${dmg} HP from ${tgt.name} and heals ${healed} HP (mana -12).`);
-    }
-  },
-  { id:'inspire', name:'Inspire', type:'buff', desc:'Boost Willpower (resist checks)', cost:{mana:6}, target:'self',
-    run: (src,tgt,util)=> {
-      if(src.mana < 6){ util.log(`${src.name} tried Inspire but lacks mana.`); return; }
-      src.mana -=6;
-      src.Willpower += 3;
-      util.log(`${src.name} inspires themselves (+3 Willpower, mana -6).`);
-    }
-  },
-];
-
-let commands = [...builtinCommands];
-
-function renderActions(){
-  const container = $('actions');
-  container.innerHTML = '';
-  commands.forEach(cmd=>{
-    const b = document.createElement('button');
-    b.textContent = cmd.name;
-    b.title = cmd.desc || '';
-    b.onclick = ()=> runCommand(cmd);
-    container.appendChild(b);
-  });
-  // also show builtins list
-  const bl = $('builtinList');
-  bl.innerHTML = '';
-  builtinCommands.forEach(c=>{
-    const d = document.createElement('div');
-    d.textContent = `${c.name} — ${c.desc}`;
-    bl.appendChild(d);
-  });
-}
-
-function getState(){
-  const A = makeCombatant('A');
-  const B = makeCombatant('B');
-  // if previous hp/mana exist (from UI), preserve them
-  const curA_hp = Number($('A_hp').textContent) || A.maxHp;
-  const curB_hp = Number($('B_hp').textContent) || B.maxHp;
-  const curA_mana = Number($('A_mana').textContent) || 50;
-  const curB_mana = Number($('B_mana').textContent) || 50;
-  A.hp = curA_hp; A.mana = curA_mana;
-  B.hp = curB_hp; B.mana = curB_mana;
-  return {A,B};
-}
-
-function logLine(msg){
-  const el = $('log');
-  const line = document.createElement('div');
-  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  el.prepend(line); // newest on top
-}
-
-function runCommand(cmd, srcPrefix='A', tgtPrefix='B'){
-  // default: run with selected current state and A acting on B
-  const {A,B} = getState();
-  const src = (srcPrefix==='A')?A:B;
-  const tgt = (tgtPrefix==='A')?A:B;
-  const util = {
-    log: (m)=> logLine(m),
-    rand: rand,
-    applyDamage: (t,a)=> applyDamage(t,a),
-  };
-  // handle potential temporary defend buff: merge to resilience for damage calc
-  const applyDefForCalc = (tgtBefore) => {
-    if(tgtBefore._defend && tgtBefore._defend>0){
-      // temporarily increase resilience for mitigation calculation by the defend amount
-      tgtBefore.Resilience = (tgtBefore.Resilience || 0) + tgtBefore._defend;
-      // mark that defend will be consumed by next damage: we attach flag consumedOnNextHit
-      tgtBefore._defend_consumed = true;
-    }
-  };
-  // wrapper for applyDamage which also consumes defend and resets additional resilience
-  const originalApply = window.applyDamage;
-  window.applyDamage = function(target, amount){
-    // ensure defend applied for the calc
-    applyDefForCalc(target);
-    const reduced = originalApply(target, amount);
-    // if _defend_consumed then remove defend temporary bump
-    if(target._defend_consumed){
-      // remove the temporary resilience bump we added earlier
-      target.Resilience = Math.max(0, target.Resilience - (target._defend || 0));
-      target._defend = 0;
-      target._defend_consumed = false;
-    }
-    return reduced;
-  };
-
-  try{
-    if(typeof cmd.run === 'function'){
-      cmd.run(src,tgt,util);
-    } else if(cmd.formula){
-      // evaluate simple formula string with src,tgt,rand,applyDamage in scope
-      const func = new Function('src','tgt','rand','applyDamage','log', `return (${cmd.formula});`);
-      const result = func(src,tgt,rand,applyDamage,logLine);
-      if(typeof result === 'string') logLine(result);
-    } else {
-      logLine(`${src.name} executes ${cmd.name} (no implementation).`);
-    }
-  } catch(e){
-    logLine(`Error running ${cmd.name}: ${e.message}`);
-  } finally {
-    // restore applyDamage global
-    window.applyDamage = originalApply;
-  }
-
-  // update UI
-  refreshUI(A,B);
-  // check for death
-  if(A.hp<=0 || B.hp<=0){
-    if(A.hp<=0 && B.hp<=0) logLine(`Both fighters fell — it's a draw.`);
-    else if(A.hp<=0) logLine(`${B.name} wins!`);
-    else logLine(`${A.name} wins!`);
-  }
-}
-
-function resetAll(){
-  // Reset HP/mana and refresh UI from inputs
-  const {A,B} = getState();
-  A.hp = A.maxHp; B.hp = B.maxHp;
-  A.mana = 50; B.mana = 50;
-  // write back
-  $('A_hp').textContent = A.hp;
-  $('B_hp').textContent = B.hp;
-  $('A_mana').textContent = A.mana;
-  $('B_mana').textContent = B.mana;
-  $('log').textContent = '';
-  $('commandsInput').value = '';
-  commands = [...builtinCommands];
-  renderActions();
-  refreshUI(A,B);
-}
-
-$('resetBtn').onclick = resetAll;
-$('autoHeal').onclick = ()=>{
-  const {A,B} = getState();
-  A.hp = Math.min(A.maxHp, A.hp + 10);
-  B.hp = Math.min(B.maxHp, B.hp + 10);
-  logLine('Both combatants heal 10 HP.');
-  refreshUI(A,B);
-};
-$('simulate').onclick = ()=>{
-  // quick auto: A uses first command on B
-  if(commands.length===0) { logLine('No commands loaded.'); return; }
-  runCommand(commands[0],'A','B');
-};
-
-$('nextAattack').onclick = ()=> {
-  // pick a default attack command (prioritise attack or spell)
-  const atk = commands.find(c=>c.type==='attack' || c.id==='strike') || commands[0];
-  runCommand(atk,'A','B');
-};
-$('nextBattack').onclick = ()=> {
-  const atk = commands.find(c=>c.type==='attack' || c.id==='strike') || commands[0];
-  runCommand(atk,'B','A');
-};
-$('skipTurn').onclick = ()=> { logLine('Turn skipped.'); };
-
-$('loadCommands').onclick = ()=>{
-  const raw = $('commandsInput').value.trim();
-  if(!raw) { logLine('No custom commands provided.'); return; }
-  try{
-    const parsed = JSON.parse(raw);
-    if(!Array.isArray(parsed)) throw new Error('Commands must be an array.');
-    // map parsed simple objects to runtime command objects
-    const parsedCmds = parsed.map(obj=>{
-      // if object contains `formula` (string), create run wrapper
-      if(obj.formula && typeof obj.formula === 'string'){
-        return {
-          id: obj.id || ('cmd_'+Math.random().toString(36).slice(2,7)),
-          name: obj.name || obj.id || 'CustomCmd',
-          type: obj.type || 'attack',
-          desc: obj.desc || '',
-          cost: obj.cost || {mana:0},
-          run: new Function('src','tgt','util','rand','applyDamage','log', 
-            // our formula can call applyDamage(src,tgt) etc. We expose util.log as log
-            `const randFn = ${rand.toString()};
-             try{
-               ${obj.formula}
-             }catch(e){ log('Error in command formula:'+e.message); }
-            `)
-        };
-      } else {
-        // no formula: ignore or include placeholder
-        return {
-          id: obj.id || ('cmd_'+Math.random().toString(36).slice(2,7)),
-          name: obj.name || obj.id || 'Cmd',
-          type: obj.type || 'attack',
-          desc: obj.desc || '',
-          run: (src,tgt,util)=> util.log(`${src.name} used ${obj.name || obj.id}.`)
-        };
-      }
-    });
-
-    // replace commands (append to builtin)
-    commands = [...builtinCommands, ...parsedCmds];
-    renderActions();
-    logLine('Custom commands loaded and appended.');
-  } catch(e){
-    logLine('Failed to parse commands JSON: '+e.message);
-  }
-};
-
-$('clearCommands').onclick = ()=>{
-  commands = [...builtinCommands];
-  $('commandsInput').value = '';
-  renderActions();
-  logLine('Custom commands cleared.');
-};
-
-// initial render
-renderActions();
-resetAll();
-
-// Allow clicking an action with source selection based on modifier keys
-document.getElementById('actions').addEventListener('click', (ev)=>{
-  if(ev.target.tagName !== 'BUTTON') return;
-  const btnText = ev.target.textContent;
-  const cmd = commands.find(c=>c.name === btnText);
-  if(!cmd) return;
-  // If shift held, run as B->A, otherwise A->B. Alt to run self-target
-  let src='A', tgt='B';
-  if(ev.shiftKey) { src='B'; tgt='A'; }
-  if(ev.altKey) { tgt = src; } // self-target
-  runCommand(cmd, src, tgt);
-});
-</script>
+	<div id="Gameplay" class="InputPanel">
+		<form id="CombatInput">
+			<table class="FrameTable"><tr><td>
+			<fieldset id="Action" class="FormContainer RadioList">
+				<legend>Choose an action...</legend>
+				<input type="radio" name="action" value="Light" id="Light" disabled="disabled" /><label for="Light" name="Light">Light</label><br />
+				<input type="radio" name="action" value="Heavy" id="Heavy" disabled="disabled" /><label for="Heavy" name="Heavy">Heavy</label><br />
+				<input type="radio" name="action" value="Grab" id="Grab" disabled="disabled" /><label for="Grab" name="Grab">Grab</label><br />
+				<input type="radio" name="action" value="Tackle" id="Tackle" disabled="disabled" /><label for="Tackle" name="Tackle">Tackle</label><br />
+				<input type="radio" name="action" value="Ranged" id="Ranged" disabled="disabled" /><label for="Ranged" name="Ranged">Ranged</label><br />
+				<input type="radio" name="action" value="Focus" id="Focus" disabled="disabled" /><label for="Focus" name="Focus">Aim/Focus</label><br />
+				<input type="radio" name="action" value="Move" id="Move" disabled="disabled" /><label for="Move" name="Move">Escape/Pursue</label><br />
+				<input type="radio" name="action" value="Magic" id="Magic" disabled="disabled" /><label for="Magic" name="Magic">Magic</label><br />
+				<input type="radio" name="action" value="Channel" id="Channel" disabled="disabled" /><label for="Channel" name="Channel">Channel</label><br />
+				<input type="radio" name="action" value="Rest" id="Rest" disabled="disabled" /><label for="Rest" name="Rest">Skip/Rest</label><br />
+				<input type="radio" name="action" value="Rip" id="Rip" disabled="disabled" /><label for="Rip" name="Rip">Damage/Rip Clothes</label><br />
+			</fieldset>
+			</td><td rowspan="2" class="FullHeightCell">
+			<textarea id="CombatResult" class="ResultBox" rows=10 cols=120>Results...</textarea>
+			<div id="ParsedOutput" class="ThemedBox">test</div>
+			</td></tr><tr><td>
+			<input type="submit" value="Take Action" id="Take_Action" class="WideButton" disabled="disabled"> 
+			</td></tr></table>
+		</form>
+	</div>
+	<div id="HoverTip" class="HoverBox"></div>
 </body>
 </html>
